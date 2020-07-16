@@ -19,9 +19,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "SDL.h"
-#include "SDL_thread.h"
-#include "SDL_mixer.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_mixer.h>
 #include "osystem.h"
 
 #include <GL/gl.h>      // Header File For The OpenGL32 Library

@@ -1,5 +1,5 @@
 #include "common.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 extern float nearVal;
 extern float farVal;

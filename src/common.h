@@ -1,10 +1,6 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-#ifndef _WIN32
-#include "config.h"
-#endif
-
 #ifdef MACOSX
 #define UNIX
 #endif
@@ -56,7 +52,7 @@ typedef signed long int s32;
 //#include <gl\glaux.h>   // Header File For The Glaux Library
 #endif
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
 
 //////////////// GAME SPECIFIC DEFINES
 
