@@ -47,9 +47,14 @@ typedef signed long int s32;
 #endif
 
 #ifdef USE_GL
-#include <GL/gl.h>      // Header File For The OpenGL32 Library
-#include <GL/glu.h>     // Header File For The GLu32 Library
+#   if defined(__APPLE__)
+#       include <OpenGL/gl.h>
+#       include <OpenGL/glu.h>
+#   else
+#       include <GL/gl.h>      // Header File For The OpenGL32 Library
+#       include <GL/glu.h>     // Header File For The GLu32 Library
 //#include <gl\glaux.h>   // Header File For The Glaux Library
+#   endif
 #endif
 
 #include <SDL2/SDL.h>
