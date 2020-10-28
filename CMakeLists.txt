@@ -92,8 +92,12 @@ add_executable(fitd
         src/zv.h)
 
 if ( WIN32 )
-    target_include_directories( fitd PRIVATE 3rdparty/sdl2/include/ )
-    target_link_directories( fitd PRIVATE 3rdparty/sdl2/lib/ )
+    target_include_directories( fitd PRIVATE
+            3rdparty/sdl2/include/
+            3rdparty/sdl2_mixer/include/ )
+    target_link_directories( fitd PRIVATE
+            3rdparty/sdl2/lib/
+            3rdparty/sdl2_mixer/lib/ )
 endif()
 
-target_link_libraries(fitd SDL2 SDL2-mixer)
+target_link_libraries(fitd SDL2 SDL2_mixer)
