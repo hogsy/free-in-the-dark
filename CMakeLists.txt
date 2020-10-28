@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
-project(free_in_the_dark C)
+project(fitd C)
 
 set(CMAKE_C_STANDARD 11)
 
 include_directories(src)
 
-add_executable(free_in_the_dark
+add_executable(fitd
         src/actorList.c
         src/actorList.h
         src/aitdBox.c
@@ -91,4 +91,9 @@ add_executable(free_in_the_dark
         src/zv.c
         src/zv.h)
 
-target_link_libraries(free_in_the_dark SDL2 SDL2-mixer)
+if ( WIN32 )
+    target_include_directories( fitd PRIVATE 3rdparty/sdl2/include/ )
+    target_link_directories( fitd PRIVATE 3rdparty/sdl2/lib/ )
+endif()
+
+target_link_libraries(fitd SDL2 SDL2-mixer)
