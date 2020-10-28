@@ -9,9 +9,7 @@ typedef struct pakInfoStruct // warning: allignement unsafe
   char compressionFlag;
   char info5;
   short int offset;
-};
-
-typedef struct pakInfoStruct pakInfoStruct;
+} pakInfoStruct;
 
 //#define USE_UNPACKED_DATA
 

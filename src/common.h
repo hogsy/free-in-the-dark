@@ -1,10 +1,6 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-#ifndef _WIN32
-#include "config.h"
-#endif
-
 #ifdef MACOSX
 #define UNIX
 #endif
@@ -51,12 +47,17 @@ typedef signed long int s32;
 #endif
 
 #ifdef USE_GL
-#include <GL/gl.h>      // Header File For The OpenGL32 Library
-#include <GL/glu.h>     // Header File For The GLu32 Library
-//#include <gl\glaux.h>   // Header File For The Glaux Library
+#   if defined(__APPLE__)
+#       include <OpenGL/gl.h>
+#       include <OpenGL/glu.h>
+#   else
+#       include <GL/gl.h>      // Header File For The OpenGL32 Library
+#       include <GL/glu.h>     // Header File For The GLu32 Library
+#   endif
 #endif
 
-#include "SDL.h"
+#define SDL_MAIN_HANDLED
+#include <SDL2/SDL.h>
 
 //////////////// GAME SPECIFIC DEFINES
 

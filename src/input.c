@@ -1,5 +1,5 @@
 #include "common.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 extern float nearVal;
 extern float farVal;
@@ -11,7 +11,7 @@ void readKeyboard(void)
   SDL_Event event;
   int size;
   int j;
-  unsigned char *keyboard;
+  const unsigned char *keyboard;
 
   inputKey = 0;
   input1 = 0;
@@ -27,7 +27,7 @@ void readKeyboard(void)
 
   }
 
-  keyboard = SDL_GetKeyState(&size);
+  keyboard = SDL_GetKeyboardState(&size);
 
   for (j = 0; j < size; j++)
   {
