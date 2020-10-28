@@ -71,7 +71,8 @@ SDL_Surface *sdl_buffer320x200;
 SDL_Surface *sdl_buffer640x400;
 SDL_Surface *sdl_bufferStretch;
 SDL_Surface *sdl_bufferRGBA;
-SDL_Surface *sdl_screen;  // that's the SDL global object for the screen
+static SDL_Window *sdl_screen;  // that's the SDL global object for the screen
+static SDL_GLContext sdlGlContext;
 SDL_Color sdl_colors[256];
 SDL_Surface *surfaceTable[16];
 char RGBA_Pal[256*4];
@@ -173,7 +174,7 @@ void Sound_Quit(void)
 void osystem_init()  // that's the constructor of the system dependent
             // object used for the SDL port
 {
-    unsigned char *keyboard;
+    const unsigned char *keyboard;
     int size;
 
     Uint32 rmask, gmask, bmask, amask;
@@ -223,24 +224,35 @@ void osystem_init()  // that's the constructor of the system dependent
 
     TTF_SetFontStyle(font, renderstyle);*/
 
-    SDL_WM_SetCaption("Alone in the dark \"GL\"", "AITD");
-
    // SDL_ShowCursor (SDL_DISABLE);
 
    // SDL_EnableUNICODE (SDL_ENABLE); // not much used in fact
 
     SDL_PumpEvents();
 
-    keyboard = SDL_GetKeyState(&size);
+    keyboard = SDL_GetKeyboardState(&size);
 
+	/*
     keyboard[SDLK_RETURN] = 0;
+    */
 
-    sdl_screen = SDL_SetVideoMode(800, 600, 32, SDL_OPENGL/*|SDL_FULLSCREEN*/);
-
+    sdl_screen = SDL_CreateWindow(
+		    "Alone in the dark \"GL\"",
+		    SDL_WINDOWPOS_UNDEFINED,
+	        SDL_WINDOWPOS_UNDEFINED,
+	        800, 600,
+	        SDL_WINDOW_OPENGL /*|SDL_FULLSCREEN*/ );
     if (sdl_screen == NULL)
   {
       fprintf(stderr, "Couldn't set 640x480x32 video mode: %s\n", SDL_GetError());
-      exit(1);
+      exit( EXIT_FAILURE );
+  }
+
+  /* now create the GL context */
+  sdlGlContext = SDL_GL_CreateContext( sdl_screen );
+  if ( sdlGlContext == NULL ) {
+	  fprintf( stderr, "Failed to create GL context: %s\n", SDL_GetError() );
+	  exit( EXIT_FAILURE );
   }
 
     osystem_mouseLeft = 0;
@@ -266,8 +278,8 @@ void osystem_init()  // that's the constructor of the system dependent
 
   modelsDisplayList = glGenLists(1);
 
-  // Create a new tessellation object 
-  tobj = gluNewTess(); 
+  // Create a new tessellation object
+  tobj = gluNewTess();
 
   // Set callback functions
   gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
@@ -336,7 +348,7 @@ void osystem_init()  // that's the constructor of the system dependent
 
 	  glBindTexture(GL_TEXTURE_2D, 0);
 
- 	
+
     glEnable(GL_TEXTURE_2D);
 	  glEnable(GL_TEXTURE_1D);
   }
@@ -404,13 +416,13 @@ void osystem_flip(unsigned char *videoBuffer)
 //  gluLookAt(0,0,cameraX,cameraCenterX,cameraCenterY,0,0,1,0);
 
   glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
+  glLoadIdentity();
 
   if(cameraX)
     fov = (atan(160.f / (float)(cameraX*4))) * 160 / M_PI;
 
   glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
+  glLoadIdentity();
   gluPerspective((((float)cameraY)/((float)cameraZ))*60,1.6f,nearVal,farVal);
   glTranslatef(0,0,cameraZoom);
 
@@ -483,11 +495,11 @@ void osystem_flip(unsigned char *videoBuffer)
 
 
  /* glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
+  glLoadIdentity();
   gluPerspective(fov,320.f/200.f,nearVal,farVal);*/
 
  /* glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
+  glLoadIdentity();
   glOrtho(0,320,200,0,0,100);
 
   glMatrixMode(GL_MODELVIEW);
@@ -539,10 +551,10 @@ void osystem_flip(unsigned char *videoBuffer)
 
   positionInQuadTable = 0;
 
-  SDL_GL_SwapBuffers( );
+  SDL_GL_SwapWindow( sdl_screen );
 
 /*  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
+  glLoadIdentity();
   glOrtho(0,320,200,0,0,100);
 
   glMatrixMode(GL_MODELVIEW);
@@ -551,7 +563,7 @@ void osystem_flip(unsigned char *videoBuffer)
   //glTranslated(-cameraX,-cameraY,-cameraZ);
 
  /* glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
+  glLoadIdentity();
   gluPerspective(180,320/200,0.1,50000);*/
   //glFrustum(-cameraCenterX, 320 - cameraCenterX, -cameraCenterY, 200 - cameraCenterY, -0.1, -50000);
   //glTranslated(-cameraX,-cameraY,-cameraZ);
@@ -582,7 +594,7 @@ void osystem_startFrame()
       glTexCoord2f(640.f/1024.f,480.f/512.f);
       glVertex3f(640,480,49);
       glTexCoord2f(0.0f,480.f/512.f);
-      glVertex3f(0,480,49); 
+      glVertex3f(0,480,49);
 
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -631,7 +643,7 @@ void osystem_CopyBlockPhys(unsigned char *videoBuffer, int left, int top, int ri
 }
 
 void osystem_initBuffer(char *buffer, int width, int height)
-{   
+{
   memset(tempBuffer2,0,1024*512*3);
   glGenTextures(1, &backTexture);
   glBindTexture(GL_TEXTURE_2D, backTexture);
@@ -668,7 +680,7 @@ void my_audio_callback(void *userdata, Uint8 *stream, int len)
 #ifdef USE_UNPACKED_DATA
 void osystem_playSampleFromName(char* sampleName)
 {
-  
+
   Mix_Chunk *sample;
 
   sample=Mix_LoadWAV_RW(SDL_RWFromFile(sampleName, "rb"), 1);
@@ -687,7 +699,7 @@ void osystem_playSampleFromName(char* sampleName)
 #else
 void osystem_playSample(char* samplePtr,int size)
 {
-  
+
   Mix_Chunk *sample;
 
   sample=Mix_LoadWAV_RW(SDL_RWFromConstMem(samplePtr, size), 1);
@@ -740,7 +752,7 @@ void osystem_addBgPolyPoint(int x, int y)
   tesselateList[tesselatePosition][4] = 1.f;
   tesselateList[tesselatePosition][5] = 1.f;
 
-  gluTessVertex(tobj, tesselateList[tesselatePosition], tesselateList[tesselatePosition]); 
+  gluTessVertex(tobj, tesselateList[tesselatePosition], tesselateList[tesselatePosition]);
 
   tesselatePosition++;
 }
@@ -808,7 +820,7 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
 				float Y = *(readList++);
 				float Z = *(readList++);
 
-				//gluProject  ( X , Y, -Z , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ ); 
+				//gluProject  ( X , Y, -Z , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ );
 
 				glTexCoord2f(X*200,Y*200);
 				glVertex3f(X,Y,Z);
@@ -855,19 +867,19 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
       quadTable[positionInQuadTable].x1 = buffer[0];
       quadTable[positionInQuadTable].y1 = buffer[1];
       quadTable[positionInQuadTable].z1 = buffer[2];
-      gluProject  ( buffer[0] , buffer[1] , buffer[2] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ ); 
+      gluProject  ( buffer[0] , buffer[1] , buffer[2] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ );
       z1 = textureZ;
 
       quadTable[positionInQuadTable].x2 = buffer[3];
       quadTable[positionInQuadTable].y2 = buffer[4];
       quadTable[positionInQuadTable].z2 = buffer[5];
-      gluProject  ( buffer[3] , buffer[4] , buffer[5] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ ); 
+      gluProject  ( buffer[3] , buffer[4] , buffer[5] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ );
       z2 = textureZ;
 
       quadTable[positionInQuadTable].x3 = buffer[6];
       quadTable[positionInQuadTable].y3 = buffer[7];
       quadTable[positionInQuadTable].z3 = buffer[8];
-      gluProject  ( buffer[6] , buffer[7] , buffer[8] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ ); 
+      gluProject  ( buffer[6] , buffer[7] , buffer[8] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ );
       z3 = textureZ;
 
       if(numPoint == 4)
@@ -875,7 +887,7 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
         quadTable[positionInQuadTable].x4 = buffer[9];
         quadTable[positionInQuadTable].y4 = buffer[10];
         quadTable[positionInQuadTable].z4 = buffer[11];
-        gluProject  ( buffer[9] , buffer[10] , buffer[11] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ ); 
+        gluProject  ( buffer[9] , buffer[10] , buffer[11] , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ );
         z4 = textureZ;
       }
 
@@ -941,7 +953,7 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
         textureX = X;
         textureY = Y;
         textureZ = Z;
-			///	gluProject  ( X , Y , Z , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ ); 
+			///	gluProject  ( X , Y , Z , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ );
 
 				if(textureY > maxY)
 					maxY = (int)textureY;
@@ -969,7 +981,7 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
 				float Y = *(readList++);
 				float Z = *(readList++);
 
-				//gluProject  ( X , Y , Z , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ ); 
+				//gluProject  ( X , Y , Z , modelMatrix , projMatrix , viewMatrix , &textureX , &textureY , &textureZ );
 
         textureX = X;
         textureY = Y;
@@ -1028,7 +1040,7 @@ void osystem_cleanScreenKeepZBuffer()
     glTexCoord2f(640.f/1024.f,480.f/512.f);
     glVertex3f(640,480,49);
     glTexCoord2f(0.0f,480.f/512.f);
-    glVertex3f(0,480,49); 
+    glVertex3f(0,480,49);
 
   glEnd();
   glBindTexture(GL_TEXTURE_2D, 0);
