@@ -11,13 +11,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "common.h"
-
-#define _WINDOWS
-//#define ZLIB_DLL
-#include "zlib.h"
+#include "miniz.h"
 
 // --------------------------------------------------------------
 // Explode unpacking functions & types
@@ -479,7 +475,7 @@ int PAK_explode(unsigned char * srcBuffer, unsigned char * dstBuffer, unsigned i
   G.ucsize = uncompressedSize;
 
   bl = 7;
-  bd = (compressedSize > 200000L) ? 8 : 7; // TODO : Totalement FOIREUX, à vérifier
+  bd = (compressedSize > 200000L) ? 8 : 7; // TODO : Totalement FOIREUX, ï¿½ vï¿½rifier
 
   if(flags & 4) {    // With literal tree--minimum match length is 3
     bb = 9;

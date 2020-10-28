@@ -282,6 +282,8 @@ void sysInitSub1(char* var0, char* var1)
   screenSm5 = var1;
 }
 
+int fileExists(char* name);
+
 void allocTextes(void)
 {
   int currentIndex;
@@ -5356,6 +5358,8 @@ void detectGame(void)
 
 int main(int argc, char** argv)
 {
+	SDL_SetMainReady();
+
   int startupMenuResult;
 //  int protectionToBeDone = 1;
   char version[256];

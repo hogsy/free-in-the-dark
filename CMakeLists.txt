@@ -3,9 +3,20 @@ project(fitd C)
 
 set(CMAKE_C_STANDARD 11)
 
-include_directories(src)
+include_directories(
+        src/
+        3rdparty/miniz/
+)
+
+add_compile_definitions(fitd PRIVATE
+        "MINIZ_NO_ARCHIVE_WRITING_APIS"
+        "MINIZ_NO_TIME"
+        )
 
 add_executable(fitd
+        3rdparty/miniz/miniz.c
+        3rdparty/miniz/miniz.h
+
         src/actorList.c
         src/actorList.h
         src/aitdBox.c
@@ -87,17 +98,21 @@ add_executable(fitd
         src/videoMode.c
         src/videoMode.h
         src/zconf.h
-        src/zlib.h
         src/zv.c
         src/zv.h)
 
-if ( WIN32 )
-    target_include_directories( fitd PRIVATE
-            3rdparty/sdl2/include/
-            3rdparty/sdl2_mixer/include/ )
-    target_link_directories( fitd PRIVATE
-            3rdparty/sdl2/lib/
-            3rdparty/sdl2_mixer/lib/ )
-endif()
+set_target_properties(fitd PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/release/")
 
-target_link_libraries(fitd SDL2 SDL2_mixer)
+target_link_libraries(fitd opengl32 glu32 SDL2 SDL2_mixer)
+if (WIN32)
+    target_include_directories(fitd PRIVATE
+            3rdparty/sdl2/include/
+            3rdparty/sdl2/include/SDL2/
+            3rdparty/sdl2_mixer/include/
+            3rdparty/sdl2_mixer/include/SDL2/
+            )
+    target_link_directories(fitd PRIVATE
+            3rdparty/sdl2/lib/
+            3rdparty/sdl2_mixer/lib/
+            )
+endif ()

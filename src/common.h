@@ -53,10 +53,10 @@ typedef signed long int s32;
 #   else
 #       include <GL/gl.h>      // Header File For The OpenGL32 Library
 #       include <GL/glu.h>     // Header File For The GLu32 Library
-//#include <gl\glaux.h>   // Header File For The Glaux Library
 #   endif
 #endif
 
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 
 //////////////// GAME SPECIFIC DEFINES
