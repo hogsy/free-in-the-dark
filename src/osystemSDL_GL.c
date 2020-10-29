@@ -160,7 +160,6 @@ void Sound_Quit( void ) {
 void osystem_init()// that's the constructor of the system dependent
                    // object used for the SDL port
 {
-	const unsigned char *keyboard;
 	int size;
 
 	Uint32 rmask, gmask, bmask, amask;
@@ -214,12 +213,6 @@ void osystem_init()// that's the constructor of the system dependent
 	// SDL_EnableUNICODE (SDL_ENABLE); // not much used in fact
 
 	SDL_PumpEvents();
-
-	keyboard = SDL_GetKeyboardState( &size );
-
-	/*
-    keyboard[SDLK_RETURN] = 0;
-    */
 
 	sdl_screen = SDL_CreateWindow(
 	        "Alone in the dark \"GL\"",

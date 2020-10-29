@@ -67,29 +67,29 @@ void readKeyboard(void)
         case SDLK_r:
           fov+=2;
           break; */
-      case SDLK_RETURN:
+      case SDL_SCANCODE_RETURN:
           input2 = 0x1C;
           break;
-      case SDLK_ESCAPE:
+      case SDL_SCANCODE_ESCAPE:
         input2 = 0x1B;
         break;
 
-      case SDLK_UP:
+      case SDL_SCANCODE_UP:
           inputKey |= 1;
           break;
 
-      case SDLK_DOWN:
+      case SDL_SCANCODE_DOWN:
           inputKey |= 2;
           break;
 
-      case SDLK_RIGHT:
+      case SDL_SCANCODE_RIGHT:
           inputKey |= 8;
           break;
 
-      case SDLK_LEFT:
+      case SDL_SCANCODE_LEFT:
           inputKey |= 4;
           break;
-      case SDLK_SPACE:
+      case SDL_SCANCODE_SPACE:
         input1 = 1;
         break;
 #ifdef INTERNAL_DEBUGGER
