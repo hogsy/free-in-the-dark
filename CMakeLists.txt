@@ -97,7 +97,6 @@ add_executable(fitd
         src/version.h
         src/videoMode.c
         src/videoMode.h
-        src/zconf.h
         src/zv.c
         src/zv.h)
 

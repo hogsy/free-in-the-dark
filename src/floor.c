@@ -1,7 +1,7 @@
 #include "common.h"
 
-unsigned long int etageVar0Size = 0;
-unsigned long int numGlobalCamera = 0;
+uint32_t etageVar0Size = 0;
+uint32_t numGlobalCamera = 0;
 cameraDataStruct* globalCameraDataTable = NULL;
 
 void loadFloor(int floorNumber)

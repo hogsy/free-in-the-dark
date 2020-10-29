@@ -2,8 +2,8 @@
 #define _FLOOR_H_
 
 extern cameraDataStruct* globalCameraDataTable;
-extern unsigned long int etageVar0Size;
-extern unsigned long int numGlobalCamera;
+extern uint32_t etageVar0Size;
+extern uint32_t numGlobalCamera;
 
 void loadFloor(int floorNumber);
 

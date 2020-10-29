@@ -653,7 +653,7 @@ int musicLoad(void* ptr)
 
   for(i=0;i<11;i++)
   {
-    unsigned long int offset;
+    uint32_t offset;
 
     offset = *((u32*)(musicPtr + i*4 + 8));
 

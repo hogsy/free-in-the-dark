@@ -15,11 +15,19 @@
 
 typedef unsigned char u8;
 typedef unsigned short int u16;
+#if defined( __x86_64__ )
+typedef unsigned int u32;
+#else
 typedef unsigned long int u32;
+#endif
 
 typedef signed char s8;
 typedef signed short int s16;
+#if defined( __x86_64__ )
+typedef signed int s32;
+#else
 typedef signed long int s32;
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -142,20 +150,21 @@ int getCVarsIdx(enumCVars);
 
 typedef unsigned char uint8;
 typedef unsigned short uint16;
+#if defined( __x86_64__ )
+typedef unsigned uint32;
+#else
 typedef unsigned long uint32;
+#endif
 #ifndef UNIX
 typedef unsigned int uint;
 #endif
 typedef signed char int8;
 typedef signed short int16;
+#if defined( __x86_64__ )
+typedef signed int32;
+#else
 typedef signed long int32;
-
-typedef unsigned char U8;
-typedef unsigned short U16;
-typedef unsigned long U32;
-typedef signed char S8;
-typedef signed short S16;
-typedef signed long S32;
+#endif
 
 #define TYPE_MASK 0x1D1
 

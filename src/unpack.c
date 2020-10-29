@@ -23,12 +23,12 @@
 #define PAK_WSIZE 0x8000
 
 typedef struct {
-  unsigned long csize;
-  unsigned long ucsize;
+  uint32_t csize;
+  uint32_t ucsize;
   unsigned char * buf_src;
   unsigned char * buf_dst;
-  unsigned long off_src;
-  unsigned long off_dst;
+  uint32_t off_src;
+  uint32_t off_dst;
   unsigned short flags;
 } PAK_stream;
 
@@ -88,7 +88,7 @@ static unsigned short cpdist8[] = {
 #define PAK_NEXTBYTE ((pG->off_src<pG->csize)?(pG->buf_src[pG->off_src++]):0)
 #define PAK_FLUSH(size) { memcpy(pG->buf_dst + pG->off_dst, PAK_slide, size); pG->off_dst += size; }
 
-#define PAK_NEEDBITS(n) {while(k<(n)){b|=((unsigned long)PAK_NEXTBYTE)<<k;k+=8;}}
+#define PAK_NEEDBITS(n) {while(k<(n)){b|=((uint32_t)PAK_NEXTBYTE)<<k;k+=8;}}
 #define PAK_DUMPBITS(n) {b>>=(n);k-=(n);}
 #define PAK_DECODEHUFT(htab, bits, mask) {\
   PAK_NEEDBITS((unsigned)(bits))\
@@ -299,14 +299,14 @@ int PAK_get_tree(PAK_stream * pG, unsigned * l, unsigned n) {
 
 /* Decompress the imploded data using coded literals and a sliding window (of size 2^(6+bdl) bytes). */
 int PAK_explode_lit(PAK_stream * pG, PAK_huft * tb, PAK_huft * tl, PAK_huft * td, unsigned bb, unsigned bl, unsigned bd, unsigned bdl) {
-  unsigned long s;      /* bytes to decompress */
+  uint32_t s;      /* bytes to decompress */
   register unsigned e;  /* table entry flag/number of extra bits */
   unsigned n, d;        /* length and index for copy */
   unsigned w;           /* current window position */
   PAK_huft *t;          /* pointer to table entry */
   unsigned mb, ml, md;  /* masks for bb, bl, and bd bits */
   unsigned mdl;         /* mask for bdl (distance lower) bits */
-  register unsigned long b; /* bit buffer */
+  register uint32_t b; /* bit buffer */
   register unsigned k;  /* number of bits in bit buffer */
   unsigned u;           /* true if unPAK_FLUSHed */
 
@@ -343,7 +343,7 @@ int PAK_explode_lit(PAK_stream * pG, PAK_huft * tb, PAK_huft * tl, PAK_huft * td
         n += (unsigned)b & 0xff;
         PAK_DUMPBITS(8)
       }
-      s = (s > (unsigned long)n ? s - (unsigned long)n : 0);
+      s = (s > (uint32_t)n ? s - (uint32_t)n : 0);
       do {
         e = PAK_WSIZE - ((d &= PAK_WSIZE-1) > w ? d : w);
         if(e>n) e = n;
@@ -376,14 +376,14 @@ int PAK_explode_lit(PAK_stream * pG, PAK_huft * tb, PAK_huft * tl, PAK_huft * td
 
 /* Decompress the imploded data using uncoded literals and a sliding window (of size 2^(6+bdl) bytes). */
 int PAK_explode_nolit(PAK_stream * pG, PAK_huft * tl, PAK_huft * td, unsigned bl, unsigned bd, unsigned bdl) {
-  unsigned long s;      /* unsigned chars to decompress */
+  uint32_t s;      /* unsigned chars to decompress */
   register unsigned e;  /* table entry flag/number of PAK_extra bits */
   unsigned n, d;        /* length and index for copy */
   unsigned w;           /* current window position */
   PAK_huft *t;          /* pointer to table entry */
   unsigned ml, md;      /* masks for bl and bd bits */
   unsigned mdl;         /* mask for bdl (distance lower) bits */
-  register unsigned long b; /* bit buffer */
+  register uint32_t b; /* bit buffer */
   register unsigned k;  /* number of bits in bit buffer */
   unsigned u;           /* true if unPAK_FLUSHed */
 
@@ -420,7 +420,7 @@ int PAK_explode_nolit(PAK_stream * pG, PAK_huft * tl, PAK_huft * td, unsigned bl
         n += (unsigned)b & 0xff;
         PAK_DUMPBITS(8)
       }
-      s = (s > (unsigned long)n ? s - (unsigned long)n : 0);
+      s = (s > (uint32_t)n ? s - (uint32_t)n : 0);
       do {
         e = PAK_WSIZE - ((d &= PAK_WSIZE-1) > w ? d : w);
         if(e > n) e = n;
