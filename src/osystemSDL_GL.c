@@ -364,7 +364,7 @@ void osystem_getPalette( char *palette ) {
 
 char tempBuffer2[ 1024 * 512 * 3 ];
 
-static unsigned long int zoom = 0;
+static uint32_t zoom = 0;
 
 float nearVal = 100;
 float farVal = 100000;

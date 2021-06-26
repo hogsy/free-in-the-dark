@@ -544,7 +544,7 @@ int makeSaveFile(int entry)
   FILE* fHandle;
   char buffer[100];
   int i;
-  unsigned long int var28 = 0;
+	uint32_t var28 = 0;
   char* ptr;
   int var_14 = 0;
   int temp;

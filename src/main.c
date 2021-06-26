@@ -395,7 +395,7 @@ void sysInit(void)
   int i;
 
 #ifndef PCLIKE
-  unsigned long int ltime;
+  uint32_t ltime;
 #else
   time_t ltime;
 #endif
@@ -1199,7 +1199,7 @@ void initEngine(void)
 {
   u8* pObjectData;
   u8* pObjectDataBackup;
-  unsigned long int objectDataSize;
+	uint32_t objectDataSize;
   FILE* fHandle;
   int i;
   int choosePersoBackup;
